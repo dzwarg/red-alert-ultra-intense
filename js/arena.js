@@ -7,7 +7,7 @@ window.Arena = (function arena_js() {
         // IF this is called from the app, launch a new arena window
         if (window.name === '') {
             console.log('opening new arena window');
-            this.proxy = window.open('arena.html', 'Arena', 'top=100,left=100,width=500,height=500,location=no,menubar=no,scrollbars=no,status=no,toolbar=no');
+            this.proxy = window.open('arena.html', 'Arena', 'location=no,menubar=no,scrollbars=no,status=no,toolbar=no');
 
             window._init.Arena = $.proxy(function() {
                 console.log('arena _init');
@@ -39,15 +39,19 @@ window.Arena = (function arena_js() {
             console.log('starting up arena');
         
             // do something cool, like: bring up the house lights
+            d3.select(this.proxy.document.body).select('#lights')
+                .transition()
+                .duration(5000)
+                .style('opacity', 0.0);
         },
         
         stop: function stop() {
             console.log('stopping arena');
             
-            if (this.proxy && this.proxy.arena) {
-                this.proxy.arena.stop();
-                return;
-            }
+            d3.select(this.proxy.document.body).select('#lights')
+                .transition()
+                .duration(5000)
+                .style('opacity', 1.0);
             
             for (var i = this.teams.length - 1; i--; i >= 0) {
                 console.log('removing team ' + this.teams[i].name);

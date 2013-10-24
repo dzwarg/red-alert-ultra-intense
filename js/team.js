@@ -8,13 +8,7 @@ window.Team = (function team_js() {
         if (window.name === '') {
             console.log('opening new team window');
             
-            var winOpts = 'top=100,width=100,height=500,location=no,menubar=no,scrollbars=no,status=no,toolbar=no';
-            if (options.position === 'left') {
-                winOpts += ',left=0';
-            }
-            if (options.position === 'right') {
-                winOpts += ',left=600';
-            }
+            var winOpts = 'location=no,menubar=no,scrollbars=no,status=no,toolbar=no';
             
             this.proxy = window.open('team.html', options.name, winOpts);
             
@@ -48,6 +42,23 @@ window.Team = (function team_js() {
             console.log('starting up team');
         
             // do something cool, like: bring in team members
+            var n = Math.round(Math.random() * 10);
+            this.players = new Array(n);
+            
+            for (var i = 0; i < n; i++) {
+                this.players[i] = new Player();
+            }
+            
+            var team = d3.select(this.proxy.document.body).select('#team');
+            team.append('h2')
+                .text(this.name);
+                
+            team.selectAll('.player')
+                .data(this.players)
+                .enter()
+                .append('div')
+                .attr('class', 'player')
+                .text(function (d,i) { return i + ': ' + d.name});
         },
         
         stop: function stop() {

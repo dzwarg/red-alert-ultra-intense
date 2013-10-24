@@ -1,10 +1,26 @@
 <html>
+    <head>
+        <style type="text/css">
+            body {
+                background-image: url(img/arena.jpg);
+                background-repeat: no-repeat;
+            }
+            #lights {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                background-color: #000;
+                opacity: 1.0;
+            }
+        </style>
+    </head>
     <body onload="_doInit()">
-        <div id="arena">
+        <div id="lights">
         </div>
     </body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
-    <script src="arena.js" type="text/javascript"></script>
     <script type="text/javascript">
     function _doInit() {
         console.log('arena page _doInit');
