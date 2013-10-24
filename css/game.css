@@ -1,0 +1,22 @@
+#arena {
+	background-image: url(../img/arena.jpg);
+	background-repeat: no-repeat;
+}
+#arena #lights {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	background-color: #000;
+	opacity: 1.0;
+}
+
+#team {
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+#team .player {
+	position:relative;
+}

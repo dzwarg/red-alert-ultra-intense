@@ -3,6 +3,7 @@ window.Team = (function team_js() {
         console.log('creating new team');
         
         this._loaded = new $.Deferred();
+        this._unloaded = new $.Deferred();
         
         // IF this is called from the main window, launch a new team window
         if (window.name === '') {
@@ -42,14 +43,14 @@ window.Team = (function team_js() {
             console.log('starting up team');
         
             // do something cool, like: bring in team members
-            var n = Math.round(Math.random() * 10);
+            var n = Math.round(5 + Math.random() * 10);
             this.players = new Array(n);
             
             for (var i = 0; i < n; i++) {
                 this.players[i] = new Player();
             }
             
-            var team = d3.select(this.proxy.document.body).select('#team');
+            var team = d3.select(this.proxy.document.body).select('#roster');
             team.append('h2')
                 .text(this.name);
                 
@@ -58,23 +59,39 @@ window.Team = (function team_js() {
                 .enter()
                 .append('div')
                 .attr('class', 'player')
-                .text(function (d,i) { return i + ': ' + d.name});
+                .style('left', '200px')
+                .text(function (d,i) { return i + ': ' + d.name})
+                .transition()
+                .duration(2000)
+                .delay(function (d,i) { return i * 100; })
+                .style('left', '0px');
         },
         
         stop: function stop() {
             console.log('stopping team');
             
-            if (this.proxy && this.proxy.team) {
-                this.proxy.team.stop();
-                return;
-            }
-        
             for (var i = this.players.length - 1; i--; i >= 0) {
                 console.log('removing player ' + this.players[i].name);
                 this.players[i] = null;
             }
             
-            // do something cool, like: exit stage left            
+            // do something cool, like: exit stage left  
+            var team = d3.select(this.proxy.document.body).select('#roster');
+            team.selectAll('.player')
+            	.transition()        
+            	.duration(2000)
+            	.delay(function (d,i) { return i * 100; })
+            	.style('left', '-200px');
+            	
+        	team.selectAll('.player')
+        		.transition()
+        		.delay(2000 + team.selectAll('.player').size())
+        		.transition()
+        		.call($.proxy(function () {
+        			this._unloaded.resolve();
+        		}, this));
+        		
+        	return this._unloaded.promise();
         },
     
         moveTo: function moveTo(x, y) {

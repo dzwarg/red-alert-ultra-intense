@@ -1,6 +1,10 @@
 <html>
-    <body onload="_doInit()">
-        <div id="team">
+	<head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF8">
+		<link rel="stylesheet" type="text/css" href="css/game.css"/>
+	</head>
+    <body id="team" onload="_doInit()">
+        <div id="roster">
         </div>
     </body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
@@ -10,6 +14,6 @@
         console.log('team page _doInit');
         
         window.opener._init[window.name]();
-    };        
+    };
     </script>
 </html>

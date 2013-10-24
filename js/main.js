@@ -1,44 +1,48 @@
 $(function () {    
-    var arena;
+    var arena, team1, team2;
 
     var startArena = function startArena() {
         arena = new Arena();
         
         arena.resizeTo(700, 468);
-        arena.moveTo(100, 100);
+        arena.moveTo(200, 100);
         
         window.arena = arena;
         
-        $.when(arena.ready()).then(function() {
+        arena.ready().then(function() {
             // arena is ready after window created and Arena.initialize
             console.log('arena ready');
             
-            var team1 = new Team({name:'Player1'}),
-                team2 = new Team({name:'Player2'});
+            team1 = new Team({name:'Player1'}),
+            team2 = new Team({name:'Player2'});
                 
-            team1.resizeTo(100,468);
+            team1.resizeTo(200,468);
             team1.moveTo(0,100);
             
-            team2.resizeTo(100,468);
-            team2.moveTo(800,100);
+            team2.resizeTo(200,468);
+            team2.moveTo(900,100);
             arena.addTeam(team1);
             arena.addTeam(team2);
-            
-            $.when(team1.ready()).then(function () {
+        })
+        .then(function() {
+            team1.ready().then(function () {
                 console.log('team 1 ready!');
                 
                 team1.start();
             });
             
-            $.when(team2.ready()).then(function () {
+            team2.ready().then(function () {
                 console.log('team 2 ready!');
                 
                 team2.start();
             });
-            
-            $.when(team1.ready(), team2.ready()).then(function() {
-                arena.start();
-            });
+        })
+        .then(function() {
+            return $.when(team1.ready(), team2.ready());
+        })
+        .then(function() {
+        	// teams are ready
+            arena.start();
         });
     };
     
