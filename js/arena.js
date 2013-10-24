@@ -53,14 +53,51 @@ window.Arena = (function arena_js() {
             	return;
             }
             
+            this.runMatchChain();
+        },
+        
+        runMatchChain: function () {
+        	console.log('running match chain');
+        	
+        	if (!this.teams[0].inTheGame()) {
+        		console.log('team 1 is the winner!');
+        		// teams[1] is the winner!
+        		return;
+        	}
+        	if (!this.teams[1].inTheGame()) {
+        		console.log('team 0 is the winner!');
+        		// teams[0] is the winner!
+        		return;
+        	}
+        	
+            this.match = this.startMatch();
+            
+            // recursive through a deferred!
+            // this will keep running through all permutations of matches,
+            // until no valid player is found on a team
+            this.match.complete().then($.proxy(this.runMatchChain, this));
+        },
+        
+        startMatch: function() {
+        	console.log('starting match');
+        	
             var players = [
             		this.teams[0].getRandomPlayer(),
             		this.teams[1].getRandomPlayer()
-            	];
+            	],
+            	match = new Match({players:players});
             	
-            this.match = new Match({players:players});
-            	
-            this.match.start();
+            $(match).on('player-update', $.proxy(this.matchUpdate, this));
+            match.start();
+            
+            return match;
+        },
+        
+        matchUpdate: function() {
+        	console.log('updating teams in match');
+        	
+        	this.teams[0].update();
+        	this.teams[1].update();
         },
         
         stop: function stop() {
@@ -110,7 +147,7 @@ window.Arena = (function arena_js() {
         
         addTeam: function addTeam(team) {
         	// add the team to the arena when the team is ready
-            $.when(team.ready()).then(function () {
+        	team.ready().then(function () {
                 console.log('adding team ' + team.name + ' to arena');
             });
                         

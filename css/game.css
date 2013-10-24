@@ -17,6 +17,42 @@
 	overflow-y: scroll;
 }
 
-#team .player {
+#team .player-cont{
 	position:relative;
+}
+
+#team .player {
+	height: 1em;
+	clear:both;
+}
+
+#team .player-name {
+	float:left;
+	font-weight: bold;
+}
+
+#team .player-strength-label {
+	float: right;
+}
+
+#team .player-alive {
+	color: green;
+}
+
+#team .player-dead {
+	color: red;
+}
+
+#team .player-strength-bar {
+	float: left;
+	clear: both;
+	height: 3px;
+	width: 100%;
+	background-color: red;
+}
+
+#team .player-strength-current {
+	height: 3px;
+	background-color: green;
+	width: 100%;
 }

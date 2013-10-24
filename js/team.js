@@ -13,7 +13,7 @@ window.Team = (function team_js() {
             
             this.proxy = window.open('team.html', options.name, winOpts);
             
-            window._init[options.name] = $.proxy(function () {
+            window._init[options.name] = $.proxy(function team_init() {
                 console.log('team _init');
                 this.initialize(options);
             }, this);
@@ -25,7 +25,7 @@ window.Team = (function team_js() {
     	
     	players: [],
     	
-        initialize: function (options) {
+        initialize: function initialize(options) {
             // initialize properties of a new team:
             //   * players
             //   * opener window
@@ -38,11 +38,11 @@ window.Team = (function team_js() {
             this._loaded.resolve();
         },
         
-        ready: function () {
+        ready: function ready() {
             return this._loaded.promise();
         },
         
-        start: function status() {
+        start: function start() {
             console.log('starting up team ' + this.name);
         
             // bring in team members
@@ -57,17 +57,42 @@ window.Team = (function team_js() {
             team.append('h2')
                 .text(this.name);
                 
-            team.selectAll('.player')
+            team.selectAll('.player-cont')
                 .data(this.players)
                 .enter()
+                .sort(function (a,b) { return b.strength - a.strength; } )
                 .append('div')
-                .attr('class', 'player')
+                .attr('class', 'player-cont')
                 .style('left', '200px')
-                .text(function (d,i) { return i + ': ' + d.name})
+                .html(function (d,i) { return d.render(i); })
                 .transition()
                 .duration(2000)
                 .delay(function (d,i) { return i * 100; })
                 .style('left', '0px');
+        },
+        
+        update: function update() {
+        	var team = d3.select(this.proxy.document.body).select('#roster');
+            var players = team.selectAll('.player-cont')
+            	.data(this.players)
+            	.sort(function (a,b) { return b.strength - a.strength; });
+            	
+            players.select('.player-strength-current')
+            	.style('width', function (d,i) {
+            		return (100 * d.strength / d.maxStrength).toFixed(2) + '%';
+            	});
+            	
+            players.select('.player-strength-label')
+            	.text(function(d,i) { return d.strength; });
+            	
+            players.select('.player-name')
+            	.text(function(d,i) { return d.name; })
+            	.classed('player-alive', function(d,i) {
+            		return d.strength > 0;
+            	})
+            	.classed('player-dead', function(d,i) {
+            		return d.strength < 1;
+            	});
         },
         
         stop: function stop() {
@@ -78,9 +103,9 @@ window.Team = (function team_js() {
                 this.players[i] = null;
             }
             
-            // do something cool, like: exit stage left  
+            // do something cool, like: exit stage left
             var team = d3.select(this.proxy.document.body).select('#roster');
-            team.selectAll('.player')
+            team.selectAll('.player-cont')
             	.transition()        
             	.duration(2000)
             	.delay(function (d,i) { return i * 100; })
@@ -111,8 +136,24 @@ window.Team = (function team_js() {
             this.players = players;
         },
         
+        inTheGame: function inTheGame() {
+        	return this.getRandomPlayer() !== null;
+        },
+        
         getRandomPlayer: function getRandomPlayer() {
-        	return this.players[Math.floor(Math.random() * this.players.length)];
+        	// get any player that still has 'strength' left
+        	var valid = [];
+        	for (var i = 0; i < this.players.length; i++) {
+        		if (this.players[i] && this.players[i].strength > 0) {
+        			valid.push(this.players[i]);
+        		}
+           	}
+           	
+           	if (valid.length === 0) {
+           		return null;
+           	}
+           	
+        	return valid[Math.floor(Math.random() * valid.length)];
         }
     };
     

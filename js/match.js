@@ -20,8 +20,21 @@ window.Match = (function match_js() {
         	this.clock = null;
         },
         
+        running: function () {
+        	return this.clock !== null;
+        },
+        
+        complete: function () {
+        	return this._unloaded.promise();
+        },
+        
         start: function () {
         	console.log('starting match!');
+        	
+        	if (this.players[0] === null || this.players[1] === null) {
+        		this.clock = null;
+        		return;
+        	}
         	
         	this.clock = setInterval($.proxy(this.doRound, this, this.clock), 100);
         },
@@ -42,14 +55,14 @@ window.Match = (function match_js() {
         			winner = this.players[1 - i];
         		}
         	}
-        	
+        	        	
+        	$(this).trigger('player-update', [{winner:winner, loser:loser}]);
+
         	if (loser === null && winner === null) {
         		this.round += 1;
         		return;
         	}
         	
-        	clearInterval(this.clock);
-
         	console.log('the winner of this match is: ' + winner.name + ' after ' + (this.round + 1) + ' rounds');
         	
         	this.stop();

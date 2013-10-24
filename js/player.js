@@ -28,13 +28,33 @@ window.Player = (function player_js() {
     };
 
     var proto = {
+    	name: '',
+    	
+    	strength: 0,
+    	
+    	maxStrength: 0,
+    	
         initialize: function (options) {
             this.name = randomizeName();
-            this.strength = randomizeStrength();
+            this.maxStrength = randomizeStrength();
+            this.strength = this.maxStrength;
             
         	console.log('creating player ' + this.name);
         },
         
+        render: function (idx) {
+        	return '<div class="player">' +
+        		'<div class="player-name">' + this.name + '</div>' +
+        		'<div class="player-strength-label">' + 
+        			this.strength + 
+        		'</div>' + this.renderStrengthBar() + '</div>';
+        },
+        
+        renderStrengthBar: function () {
+        	return '<div class="player-strength-bar">' +
+        		'<div class="player-strength-current"></div>' +
+        		'</div>';
+        }
     };
     
     $.extend(Player.prototype, proto);
