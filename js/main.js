@@ -52,7 +52,9 @@ $(function () {
     
     var stopArena = function stopArena() {
         if (arena) {
-            arena.stop();
+            arena.stop().then(function() {
+            	arena.proxy.close();
+            });
         }
     };
     

@@ -20,10 +20,6 @@ window.Match = (function match_js() {
         	this.clock = null;
         },
         
-        unready: function() {
-        	return this._unloaded.promise();
-        },
-        
         start: function () {
         	console.log('starting match!');
         	
@@ -54,7 +50,7 @@ window.Match = (function match_js() {
         	
         	clearInterval(this.clock);
 
-        	console.log('the winner of this match is: ' + victorious.name + ' after ' + (this.round + 1) + ' rounds');
+        	console.log('the winner of this match is: ' + winner.name + ' after ' + (this.round + 1) + ' rounds');
         	
         	this.stop();
 	    },
@@ -70,6 +66,8 @@ window.Match = (function match_js() {
         	
         	// TODO: trigger a 'game over' event
         	// $.trigger('gameover', [{winner:winner, loser:loser}]);
+        	
+        	return this._unloaded.promise();
 	    }
     };
     

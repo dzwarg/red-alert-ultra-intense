@@ -21,6 +21,10 @@ window.Team = (function team_js() {
     };
 
     var proto = {
+    	name: '',
+    	
+    	players: [],
+    	
         initialize: function (options) {
             // initialize properties of a new team:
             //   * players
@@ -30,7 +34,6 @@ window.Team = (function team_js() {
             
             this.name = options.name;
             this.players = [];
-            this.base = window.opener;
             
             this._loaded.resolve();
         },
@@ -40,9 +43,9 @@ window.Team = (function team_js() {
         },
         
         start: function status() {
-            console.log('starting up team');
+            console.log('starting up team ' + this.name);
         
-            // do something cool, like: bring in team members
+            // bring in team members
             var n = Math.round(5 + Math.random() * 10);
             this.players = new Array(n);
             
@@ -68,7 +71,7 @@ window.Team = (function team_js() {
         },
         
         stop: function stop() {
-            console.log('stopping team');
+            console.log('stopping team ' + this.name);
             
             for (var i = this.players.length - 1; i--; i >= 0) {
                 console.log('removing player ' + this.players[i].name);
@@ -83,13 +86,11 @@ window.Team = (function team_js() {
             	.delay(function (d,i) { return i * 100; })
             	.style('left', '-200px');
             	
-        	team.selectAll('.player')
-        		.transition()
-        		.delay(2000 + team.selectAll('.player').size())
-        		.transition()
-        		.call($.proxy(function () {
-        			this._unloaded.resolve();
-        		}, this));
+        	var closeTimeout = 2000 + 100 * team.selectAll('.player').size();
+        	setTimeout($.proxy(function(){
+        		console.log('team ' + this.name + ' stopped');
+        		this._unloaded.resolve();
+        	}, this), closeTimeout);
         		
         	return this._unloaded.promise();
         },
@@ -108,6 +109,10 @@ window.Team = (function team_js() {
             console.log('adding ' + players.length + ' players to team');
             
             this.players = players;
+        },
+        
+        getRandomPlayer: function getRandomPlayer() {
+        	return this.players[Math.floor(Math.random() * this.players.length)];
         }
     };
     
