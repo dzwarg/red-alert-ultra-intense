@@ -1,4 +1,14 @@
 window.Arena = (function arena_js() {
+	// Arena class
+	//
+	// Arena will create two deferred objects that are unresolved; one for loading state
+	// and another for unloading state.  When the arena window is loaded and initialized,
+	// this._loaded is resolved; when the arena window has shut down all child windows,
+	// this._unloaded is resolved.
+	//
+	// This constructor creates a new proxy window to 'arena.html', which has the canvas
+	// for the arena. This object contains the matches and teams that are associated with
+	// a single battle.
     var Arena = function Arena(options) {
         console.log('creating new arena');
         
@@ -17,15 +27,26 @@ window.Arena = (function arena_js() {
         }
     };
 
+	// prototype methods to add to the 'Arena' class
     var proto = {
+    
+    	// the teams in the arena
     	teams: [],
     	
+    	// the current match
     	match: null,
     	
+    	// the height of the arena window
     	height: 0, 
     	
+    	// the width of the arena window
     	width: 0,
     	
+    	// initialize the Arena
+    	//
+    	// This is called after the 'onload' event of the child window is called,
+    	// and the current document (parent) receives a message that the child document
+    	// is ready.
         initialize: function (options) {
             // initialize properties of a new arena:
             //   * matches
@@ -48,10 +69,18 @@ window.Arena = (function arena_js() {
             this._loaded.resolve();
         },
         
+        // return a promise for the ready state
+        //
+        // The object instance will be ready when the child window is loaded, and the
+        // initialize function has been called.
         ready: function () {
             return this._loaded.promise();
         },
         
+        // start the arena
+        //
+        // Start a new arena. If there are teams already attached, run a match-up
+        // immediately.
         start: function status() {
             console.log('starting up arena');
                 
@@ -63,6 +92,11 @@ window.Arena = (function arena_js() {
             this.runMatchChain();
         },
         
+        // run a sequence of matches until there are no more valid players
+        //
+        // This is a pseudo-recursive function which will invoke itself when
+        // valid matches are complete. Matches are complete when one of the teams
+        // in the arena is no longer "in the game".
         runMatchChain: function () {
         	console.log('running match chain');
         	
@@ -85,6 +119,12 @@ window.Arena = (function arena_js() {
             this.match.complete().then($.proxy(this.runMatchChain, this));
         },
         
+        // start a single match, and return it
+        //
+        // Starting a match involves getting a random player from each team,
+        // and pitting them against each other. The match is started and returned.
+        // It is possible to check on the state of the match by observing the promise
+        // returned by the 'complete()' method.
         startMatch: function startMatch() {
         	console.log('starting match');
         	
@@ -103,6 +143,9 @@ window.Arena = (function arena_js() {
             return match;
         },
         
+        // An event handler that updates the UI when a match progresses
+        //
+        // This delegates UI updates to separate team windows.
         matchUpdate: function matchUpdate() {
         	console.log('updating teams in match');
         	
@@ -110,15 +153,21 @@ window.Arena = (function arena_js() {
         	this.teams[1].update();
         },
         
+        // An event handler that is called when two players are dropped into the arena
+        //
+        // This will call 'callback' when players have entered, and are ready to do battle.
         playersEntered: function playersEntered(event, players, callback) {
+        
+        	// play some fanfare when players enter
         	audio.play('enter1');
         	
         	var arena = d3.select(this.proxy.document.body);
         	
-        	// always start with zero avatars
+        	// remove any currently installed avatars
         	arena.selectAll('#arena .avatar')
         		.remove();
         		
+        	// add some avatar images, using the avatar.src property of each player
         	arena.selectAll('#arena .avatar')
         		.data(players)
         		.enter()
@@ -128,29 +177,41 @@ window.Arena = (function arena_js() {
         		.classed('avatar-left', function (d,i) { return (i===0); })
         		.classed('avatar-right', function (d,i) { return (i===1); });
         		
+        	// the left avatar should be placed backstage to the left, and enter
+        	// into the arena stage left
         	arena.selectAll('.avatar-left')
         		.style('left', '-200px')
         		.transition()
         		.style('left', '140px');
         		
+        	// the right avatar should be placed backstage to the right, and enter
+        	// into the arena stage right
         	arena.selectAll('.avatar-right')
         		.style('right', '-200px')
         		.transition()
         		.style('right', '140px');
         		
-        	// default time for the transitions is 250ms
-        	setTimeout(callback, 250);
+        	// default time for the transitions is 250ms, but our entrance theme song
+        	// lasts a little more than a second
+        	setTimeout(callback, 1500);
         },
         
+        // An event handler that is called when players depart from the arena
+        //
+        // This will propel the winner up, and drop the loser down
         playersExited: function playersExited(event, players, winner, loser, callback) {
         	var arena = d3.select(this.proxy.document.body);
         	
+        	// select the loser, and set his/her top position to the bottom of the
+        	// document, sending them to purgatory
         	arena.selectAll('#arena .avatar')
         		.data(players)
         		.filter(function (d,i) { return d.name === loser.name; })
         		.transition()
         		.style('top', this.proxy.document.height);
         		
+        	// select the winner, and set his/her top position to above the top of
+        	// the document, sending them to elysium
         	arena.selectAll('#arena .avatar')
         		.data(players)
         		.filter(function (d,i) { return d.name === winner.name; })
@@ -161,6 +222,11 @@ window.Arena = (function arena_js() {
         	setTimeout(callback, 250);
         },
         
+        // stop the arena
+        //
+        // Stopping an arena stops any matches that are running, as well as stopping
+        // any child team windows. This returns a promise for when everything has been
+        // stopped.
         stop: function stop() {
             console.log('stopping arena');
             
@@ -169,17 +235,31 @@ window.Arena = (function arena_js() {
                 .transition()
                 .duration(5000)
                 .style('opacity', 1.0);
-
+                
+            var done = new $.Deferred();
             
+            // resolve the deferred when the transition is over
+            setTimeout(function() { done.resolve(); }, 5000);
+            
+            var stopping = [done];
+
+            // if there is a match, stop it; stop teams after match is stopped
             if (this.match !== null) {
-            	return this.match.stop()
-            		.then($.proxy(this.stopTeams, this));
+            	stopping.push( this.match.stop()
+            		.then($.proxy(this.stopTeams, this)));
             }
             else {
-				return this.stopTeams();
+            	// no match available, just stop the teams
+				stopping.push( this.stopTeams() );
 			}
+			
+			return $.when.apply(this, stopping);
         },
         
+        // stop the teams & team windows
+        //
+        // This initiates the team window shutdown, allowing all players to exit
+        // the 'dugouts' in a dignified manner.
         stopTeams: function() {
         	var stoppers = [], stopper;
             for (var i = this.teams.length - 1; i >= 0; i--) {
@@ -196,16 +276,19 @@ window.Arena = (function arena_js() {
             return $.when.apply(this, stoppers);
         },
     
+    	// move the arena to a specific location on the desktop
         moveTo: function moveTo(x, y) {
             // moving the arena moves the proxy window
             this.proxy.moveTo(x, y);
         },
         
+        // resize the arena to some specific dimensions
         resizeTo: function resizeTo(w, h) {
             // resizing the arena resizes the proxy window
             this.proxy.resizeTo(w, h);
         },
         
+        // add a new team to the arena
         addTeam: function addTeam(team) {
         	// add the team to the arena when the team is ready
         	team.ready().then(function () {

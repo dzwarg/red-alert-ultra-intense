@@ -64,7 +64,7 @@ window.Match = (function match_js() {
         	
         	audio.play('hit1');
         	        	
-        	$(this).trigger('player-update', [{winner:winner, loser:loser}]);
+        	$(this).trigger('player-update');
 
         	if (loser === null && winner === null) {
         		this.round += 1;

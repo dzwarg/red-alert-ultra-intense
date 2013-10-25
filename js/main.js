@@ -3,39 +3,51 @@ $(function () {
     	team1,
     	team2,
     	width = window.screen.availWidth,
-    	height = window.screen.availHeight;
+    	height = window.screen.availHeight,
+    	options = {height:700, width:468},
+    	teamWidth = (width-options.width)/2,
+    	topMargin = 100;;
 	
+	// start an arena
     var startArena = function startArena() {
-        arena = new Arena({height:700, width:468});
+    	// create a new arena
+        arena = new Arena(options);
         
-        arena.resizeTo(700, 468);
-        arena.moveTo((width-700)/2, 100);
+        // position the arena where we want it
+        arena.resizeTo(options.width, options.height);
+        arena.moveTo(teamWidth, topMargin);
         
-        window.arena = arena;
+        // save a global reference to the arena
+        //window.arena = arena;
         
+        // when the arena is ready
         arena.ready().then(function() {
-            // arena is ready after window created and Arena.initialize
             console.log('arena ready');
             
-            team1 = new Team({name:'Team 1', width:(width-700)/2}),
-            team2 = new Team({name:'Team 2', width:(width-700)/2});
+            // create two new teams
+            team1 = new Team({name:'Team 1', width:teamWidth}),
+            team2 = new Team({name:'Team 2', width:teamWidth});
                 
-            team1.resizeTo((width-700)/2,height-100);
-            team1.moveTo(0,100);
+            // resize and position the new team1
+            team1.resizeTo(teamWidth,height-topMargin);
+            team1.moveTo(0,topMargin);
             
-            team2.resizeTo((width-700)/2,height-100);
-            team2.moveTo(width-(width-700)/2,100);
+            // resize and position the new team2
+            team2.resizeTo(teamWidth,height-topMargin);
+            team2.moveTo(width-teamWidth,topMargin);
             
+            // add new teams to arena
             arena.addTeam(team1);
             arena.addTeam(team2);
-        })
-        .then(function() {
+
+			// when team1 is ready
             team1.ready().then(function () {
                 console.log('team 1 ready!');
                 
                 team1.start();
             });
             
+            // when team2 is ready
             team2.ready().then(function () {
                 console.log('team 2 ready!');
                 
@@ -43,22 +55,27 @@ $(function () {
             });
         })
         .then(function() {
+        	// join the team1 and team2 ready checkpoints
             return $.when(team1.started(), team2.started());
         })
         .then(function() {
-        	// teams are ready
+        	// teams are ready, start up the arena
             arena.start();
         });
         
+        // initialize the audio system
         audio.boot();
         audio.add('hit1');
         audio.add('win1');
         audio.add('enter1');
     };
     
+    // stop the arena
     var stopArena = function stopArena() {
         if (arena) {
+        	// initiate a stop event
             arena.stop().then(function() {
+            	// when the stop event is resolved, close the arena
             	arena.proxy.close();
             });
         }
