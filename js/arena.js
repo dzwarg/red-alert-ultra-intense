@@ -103,15 +103,15 @@ window.Arena = (function arena_js() {
         	if (!this.teams[0].inTheGame()) {
         		console.log('team 1 is the winner!');
         		// teams[1] is the winner!
-			audio.play('cheering');
+				audio.play('cheering');
         		audio.play('welcome');
-			return;
+				return;
         	}
         	if (!this.teams[1].inTheGame()) {
         		console.log('team 0 is the winner!');
         		// teams[0] is the winner!
-			audio.play('welcome');
-			audio.play('cheering');
+				audio.play('welcome');
+				audio.play('cheering');
         		return;
         	}
         	
@@ -206,7 +206,7 @@ window.Arena = (function arena_js() {
         playersExited: function playersExited(event, players, winner, loser, callback) {
         	var arena = d3.select(this.proxy.document.body);
         
-		audio.play('victory');
+			audio.play('victory');
 	
         	// select the loser, and set his/her top position to the bottom of the
         	// document, sending them to purgatory
@@ -222,7 +222,7 @@ window.Arena = (function arena_js() {
         		.data(players)
         		.filter(function (d,i) { return d.name === winner.name; })
         		.transition()
-			.delay(250)
+				.delay(250)
         		.style('top', '-256px');
         		
         	// default time for the transitions is 250ms

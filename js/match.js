@@ -95,13 +95,13 @@ window.Match = (function match_js() {
         	}
         	
         	var ran = Math.floor((Math.random()*10)+1);
-		if(ran<4){
-                	audio.play('hit1');
-		}else if(ran>6){
-			audio.play('attack');
-                }else{
-			audio.play('defend');
-                }
+			if(ran<4){
+                audio.play('hit1');
+			} else if(ran>6) {
+				audio.play('attack');
+            } else {
+				audio.play('defend');
+            }
         	        	
         	$(this).trigger('player-update');
 

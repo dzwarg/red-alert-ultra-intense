@@ -8,22 +8,22 @@ $(function () {
     	teamWidth = (width-options.width)/2,
     	topMargin = 100;
 	
-       // initialize the audio system
-        audio.boot();
-        audio.add('hit1');
-        audio.add('win1');
-        audio.add('enter1');
-        audio.add('playerDefeat');
-        audio.add('welcome');
-        audio.add('cheering');
-        audio.add('attack');
-        audio.add('defend');
-        audio.add('teamLoad');
-        audio.add('exit');
-        audio.add('victory');
-        audio.add('playerEnter');
-        audio.add('playerAdded');
-        audio.add('teamVictory');
+    // initialize the audio system
+	audio.boot();
+	audio.add('hit1');
+	audio.add('win1');
+	audio.add('enter1');
+	audio.add('playerDefeat');
+	audio.add('welcome');
+	audio.add('cheering');
+	audio.add('attack');
+	audio.add('defend');
+	audio.add('teamLoad');
+	audio.add('exit');
+	audio.add('victory');
+	audio.add('playerEnter');
+	audio.add('playerAdded');
+	audio.add('teamVictory');
 
 	// start an arena
     var startArena = function startArena() {
