@@ -80,6 +80,10 @@ window.Team = (function team_js() {
                 .delay(function (d,i) { return i * 100; })
                 .style('left', '0px');
                 
+            // set the width of the strength bar, based on the width of this display
+            team.selectAll('.player-strength-bar')
+                .style('width', (this.width - 103) + 'px'); // 103 based on guessing
+                
             setTimeout($.proxy(function() {
             	this._started.resolve();
             }, this), 1000 + this.players.length * 100);
