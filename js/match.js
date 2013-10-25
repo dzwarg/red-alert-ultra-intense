@@ -61,6 +61,9 @@ window.Match = (function match_js() {
         	// since this is a trigger, pass the callback to be invoked when the players
         	// have fully entered the arena
         	$(this).trigger('players-entered', [this.players, $.proxy(function() {
+				
+				// TODO: add projectile animations to arena
+				
             	this.clock = setInterval($.proxy(this.doRound, this), 100);
         	}, this)]);
         },
@@ -92,13 +95,13 @@ window.Match = (function match_js() {
         	}
         	
         	var ran = Math.floor((Math.random()*10)+1);
-		if(ran<4){
-                	audio.play('hit1');
-		}else if(ran>6){
-			audio.play('attack');
-                }else{
-			audio.play('defend');
-                }
+			if(ran<4){
+                audio.play('hit1');
+			} else if(ran>6) {
+				audio.play('attack');
+            } else {
+				audio.play('defend');
+            }
         	        	
         	$(this).trigger('player-update');
 
@@ -106,6 +109,8 @@ window.Match = (function match_js() {
         		this.round += 1;
         		return;
         	}
+        	
+        	// TODO: remove projectile animations
         	
         	clearInterval(this.clock);
         	
