@@ -1,5 +1,6 @@
 window.Player = (function player_js() {
 	randomizeName = function() {
+		/*
 		var chars = new Array(26*2),
 			i,
 			n,
@@ -15,7 +16,9 @@ window.Player = (function player_js() {
 		for (i = 0; i < n; i++) {
 			name += chars[Math.floor(Math.random() * 26 * 2)];
 		}
+		*/
 		
+		name = 'IMGCSI-' + Math.round(Math.random() * 1000);
 		return name;
 	};
 	
