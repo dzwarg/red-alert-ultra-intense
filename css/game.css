@@ -1,3 +1,22 @@
+#index .index-panel {
+	float:left;
+	width: 50%;
+}
+
+#index #start {
+	width: 30%;
+	height: 10%;
+	background-color: green;
+	font-size: 3em;
+}
+
+#index #stop {
+	width: 30%;
+	height: 10%;
+	background-color: red;
+	font-size: 3em;
+}
+
 #arena {
 	background-image: url(../img/arena.jpg);
 	background-repeat: no-repeat;
