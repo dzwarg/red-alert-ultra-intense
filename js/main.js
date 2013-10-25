@@ -6,7 +6,7 @@ $(function () {
     	height = window.screen.availHeight,
     	options = {height:468, width:700},
     	teamWidth = (width-options.width)/2,
-    	topMargin = 100;;
+    	topMargin = 100;
 	
 	// start an arena
     var startArena = function startArena() {
