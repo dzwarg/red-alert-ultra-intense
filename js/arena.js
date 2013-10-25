@@ -322,21 +322,25 @@ window.Arena = (function arena_js() {
         },
 
         getProjectile: function (side) {
+            // list of gif names
             var gif = [
-                "bread",,
+                "bread",
                 "cake",
                 "ice-cream",
                 "str-short-cake"
             ];
 
+            // random integer between 0-3
             var n = Math.floor((Math.random()*4)+0);
 
+            // animation coming from right or left
             if (side) {
                 side = "";
             } else {
                 side = "_l";
             }
 
+            // build file path
             return "./img/projectilesinmotion/" + gif[n] + side +".gif" ;
         }
     };
