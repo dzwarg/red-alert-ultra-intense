@@ -1,20 +1,26 @@
+#index {
+	font-family: sans-serif;
+	font-size: 2em;
+}
+
 #index .index-panel {
 	float:left;
 	width: 50%;
+	text-align: center;
 }
 
 #index #start {
 	width: 30%;
 	height: 10%;
 	background-color: green;
-	font-size: 3em;
+	font-size: 1em;
 }
 
 #index #stop {
 	width: 30%;
 	height: 10%;
 	background-color: red;
-	font-size: 3em;
+	font-size: 1em;
 }
 
 #arena {
@@ -30,6 +36,15 @@
 	right: 0;
 	background-color: #000;
 	opacity: 1.0;
+}
+
+#arena #winner {
+	display:none;
+	font-size: 3em;
+	font-weight: bold;
+	text-align: center;
+	margin-top: 7em;
+	font-family: sans-serif;
 }
 
 #arena .avatar {

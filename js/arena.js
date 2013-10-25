@@ -89,7 +89,8 @@ window.Arena = (function arena_js() {
             	return;
             }
             
-            setTimeout($.proxy(this.runMatchChain, this), 3000);
+            //setTimeout($.proxy(this.runMatchChain, this), 3000);
+            this.runMatchChain();
         },
         
         // run a sequence of matches until there are no more valid players
@@ -100,18 +101,21 @@ window.Arena = (function arena_js() {
         runMatchChain: function () {
         	console.log('running match chain');
         	
+        	var winnerName = '';
+        	
         	if (!this.teams[0].inTheGame()) {
-        		console.log('team 1 is the winner!');
-        		// teams[1] is the winner!
-				audio.play('cheering');
-        		audio.play('welcome');
-				return;
+        		winnerName = this.teams[0].name;
         	}
         	if (!this.teams[1].inTheGame()) {
-        		console.log('team 0 is the winner!');
-        		// teams[0] is the winner!
-				audio.play('welcome');
-				audio.play('cheering');
+        		winnerName = this.teams[1].name;
+        	}
+        	
+        	if (winnerName !== '') {
+        		var el = $(this.proxy.document.body).find('#winner');
+        		el.text('Congratulations ' + winnerName);
+        		el.show();
+        		
+        		audio.play('cheering');
         		return;
         	}
         	

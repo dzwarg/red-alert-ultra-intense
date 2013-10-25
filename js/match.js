@@ -64,7 +64,7 @@ window.Match = (function match_js() {
 				
 				// TODO: add projectile animations to arena
 				
-            	this.clock = setInterval($.proxy(this.doRound, this), 100);
+            	this.clock = setInterval($.proxy(this.doRound, this), 500);
         	}, this)]);
         },
         
@@ -94,14 +94,7 @@ window.Match = (function match_js() {
         		}
         	}
         	
-        	var ran = Math.floor((Math.random()*10)+1);
-			if(ran<4){
-                audio.play('hit1');
-			} else if(ran>6) {
-				audio.play('attack');
-            } else {
-				audio.play('defend');
-            }
+        	audio.play('hit1');
         	        	
         	$(this).trigger('player-update');
 

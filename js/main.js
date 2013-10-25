@@ -80,7 +80,7 @@ $(function () {
             arena.start();
         });
         
-	audio.play('teamVictory');
+		//audio.play('teamVictory');
     };
     
     // stop the arena
