@@ -37,7 +37,12 @@ window.Match = (function match_js() {
         		return;
         	}
         	
-        	this.clock = setInterval($.proxy(this.doRound, this, this.clock), 100);
+        	// Bring in players to the arena
+        	// since this is a trigger, pass the callback to be invoked when the players
+        	// have fully entered the arena
+        	$(this).trigger('players-entered', [this.players, $.proxy(function() {
+            	this.clock = setInterval($.proxy(this.doRound, this, this.clock), 100);
+        	}, this)]);
         },
         
         doRound: function () {

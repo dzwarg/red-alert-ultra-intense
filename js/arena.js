@@ -22,6 +22,10 @@ window.Arena = (function arena_js() {
     	
     	match: null,
     	
+    	height: 0, 
+    	
+    	width: 0,
+    	
         initialize: function (options) {
             // initialize properties of a new arena:
             //   * matches
@@ -31,6 +35,9 @@ window.Arena = (function arena_js() {
             
             this.teams = [];
             this.match = null;
+            
+            this.height = options.height;
+            this.width = options.width;
                     
             // bring up the house lights
             d3.select(this.proxy.document.body).select('#lights')
@@ -78,7 +85,7 @@ window.Arena = (function arena_js() {
             this.match.complete().then($.proxy(this.runMatchChain, this));
         },
         
-        startMatch: function() {
+        startMatch: function startMatch() {
         	console.log('starting match');
         	
             var players = [
@@ -88,16 +95,30 @@ window.Arena = (function arena_js() {
             	match = new Match({players:players});
             	
             $(match).on('player-update', $.proxy(this.matchUpdate, this));
+            $(match).on('players-entered', $.proxy(this.playersEntered, this));
+            
             match.start();
             
             return match;
         },
         
-        matchUpdate: function() {
+        matchUpdate: function matchUpdate() {
         	console.log('updating teams in match');
         	
         	this.teams[0].update();
         	this.teams[1].update();
+        },
+        
+        playersEntered: function playersEntered(event, players, callback) {
+        	var arena = this;
+        	d3.select(this.proxy.document.body).selectAll('#arena .avatar')
+        		.data(players)
+        		.enter()
+        		.append('img')
+        		.attr('class', 'avatar')
+        		.attr('src', function (d,i) { return d.avatar.src; })
+        		.classed('avatar-left', function (d,i) { return (i===0); })
+        		.classed('avatar-right', function (d,i) { return (i===1); });
         },
         
         stop: function stop() {

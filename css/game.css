@@ -2,6 +2,7 @@
 	background-image: url(../img/arena.jpg);
 	background-repeat: no-repeat;
 }
+
 #arena #lights {
 	position: absolute;
 	left: 0;
@@ -10,6 +11,19 @@
 	right: 0;
 	background-color: #000;
 	opacity: 1.0;
+}
+
+#arena .avatar {
+	position: absolute;
+	top: 125px;
+}
+
+#arena .avatar-left {
+	left: 140px;
+}
+
+#arena .avatar-right {
+	right: 140px;
 }
 
 #team {
@@ -22,8 +36,12 @@
 }
 
 #team .player {
-	height: 1em;
+	height: 64px;
 	clear:both;
+}
+
+#team .player-mug {
+	float:left;
 }
 
 #team .player-name {

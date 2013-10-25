@@ -26,6 +26,8 @@ window.Team = (function team_js() {
     	
     	players: [],
     	
+    	width: 0,
+    	
         initialize: function initialize(options) {
             // initialize properties of a new team:
             //   * players
@@ -33,6 +35,7 @@ window.Team = (function team_js() {
             
             console.log('initializing team properties');
             
+            this.width = options.width;
             this.name = options.name;
             this.players = [];
             
@@ -69,16 +72,17 @@ window.Team = (function team_js() {
                 .enter()
                 .append('div')
                 .attr('class', 'player-cont')
-                .style('left', '200px')
+                .style('left', this.width + 'px')
                 .html(function (d,i) { return d.render(i); })
                 .transition()
-                .duration(2000)
+                .ease('exp-out', 2)
+                .duration(1000)
                 .delay(function (d,i) { return i * 100; })
                 .style('left', '0px');
                 
             setTimeout($.proxy(function() {
             	this._started.resolve();
-            }, this), 2000 + this.players.length * 100);
+            }, this), 1000 + this.players.length * 100);
         },
         
         sortPlayers: function(a,b) {
@@ -98,6 +102,10 @@ window.Team = (function team_js() {
             	
             players.select('.player-strength-label')
             	.text(function(d,i) { return d.strength; });
+            	
+            players.select('.player-mug')
+            	.select('img')
+            	.attr('src', function(d,i) { return d.mug.src; });
             	
             players.select('.player-name')
             	.text(function(d,i) { return d.name; })
@@ -120,12 +128,13 @@ window.Team = (function team_js() {
             // do something cool, like: exit stage left
             var team = d3.select(this.proxy.document.body).select('#roster');
             team.selectAll('.player-cont')
-            	.transition()        
-            	.duration(2000)
+            	.transition()
+            	.ease('exp-in', 2)
+            	.duration(1000)
             	.delay(function (d,i) { return i * 100; })
-            	.style('left', '-200px');
+            	.style('left', '-' + this.width + 'px');
             	
-        	var closeTimeout = 2000 + 100 * team.selectAll('.player').size();
+        	var closeTimeout = 1000 + 100 * team.selectAll('.player').size();
         	setTimeout($.proxy(function(){
         		console.log('team ' + this.name + ' stopped');
         		this._unloaded.resolve();

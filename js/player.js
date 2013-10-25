@@ -22,6 +22,11 @@ window.Player = (function player_js() {
 	randomizeStrength = function() {
 		return Math.round(5 + Math.random() * 10);
 	};
+	
+	randomizeAvatar = function(closeup) {
+		return String.fromCharCode(65 + Math.floor(3 * Math.random())) + '1' + 
+			(closeup? '-mug' : '') + '.png';
+	};
 
     var Player = function Player(options) {
         this.initialize(options);
@@ -34,16 +39,26 @@ window.Player = (function player_js() {
     	
     	maxStrength: 0,
     	
+    	mug: null,
+    	
+    	avatar: null,
+    	
         initialize: function (options) {
             this.name = randomizeName();
             this.maxStrength = randomizeStrength();
+            this.mug = new Image();
+            this.avatar = new Image();
             this.strength = this.maxStrength;
+            
+            this.mug.src = 'img/avatars/' + randomizeAvatar(true);
+            this.avatar.src = 'img/avatars/' + randomizeAvatar(false);
             
         	console.log('creating player ' + this.name);
         },
         
         render: function (idx) {
         	return '<div class="player">' +
+        		'<div class="player-mug"><img src="' + this.mug.src + '"/></div>' +
         		'<div class="player-name">' + this.name + '</div>' +
         		'<div class="player-strength-label">' + 
         			this.strength + 
