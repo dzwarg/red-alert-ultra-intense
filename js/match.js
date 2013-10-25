@@ -2,7 +2,8 @@ window.Match = (function match_js() {
     var Match = function Match(options) {
     	console.log('creating new match');
     	
-    	this._unloaded = new $.Deferred();
+    	this._completed = new $.Deferred();
+    	this._canceled = new $.Deferred();
     	
     	this.initialize(options);
     };
@@ -25,7 +26,7 @@ window.Match = (function match_js() {
         },
         
         complete: function () {
-        	return this._unloaded.promise();
+        	return this._completed.promise();
         },
         
         start: function () {
@@ -65,7 +66,9 @@ window.Match = (function match_js() {
         	
         	console.log('the winner of this match is: ' + winner.name + ' after ' + (this.round + 1) + ' rounds');
         	
-        	this.stop();
+	    	clearInterval(this.clock);
+        	
+        	this._completed.resolve();
 	    },
 	   
 	    stop: function() {
@@ -75,12 +78,12 @@ window.Match = (function match_js() {
 	    	
 	    	clearInterval(this.clock);
 	    	
-	    	this._unloaded.resolve();
+	    	this._canceled.resolve();
         	
         	// TODO: trigger a 'game over' event
         	// $.trigger('gameover', [{winner:winner, loser:loser}]);
         	
-        	return this._unloaded.promise();
+        	return this._canceled.promise();
 	    }
     };
     

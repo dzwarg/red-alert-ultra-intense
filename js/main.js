@@ -38,16 +38,12 @@ $(function () {
             });
         })
         .then(function() {
-            return $.when(team1.ready(), team2.ready());
+            return $.when(team1.started(), team2.started());
         })
         .then(function() {
         	// teams are ready
             arena.start();
         });
-    };
-    
-    var arenaStatus = function arenaStatus() {
-        arena.status();
     };
     
     var stopArena = function stopArena() {
@@ -63,6 +59,5 @@ $(function () {
     
     // wire up click on start button
     $('#start').on('click', startArena);
-    $('#status').on('click', arenaStatus);
     $('#stop').on('click', stopArena);
 });

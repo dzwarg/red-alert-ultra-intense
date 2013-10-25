@@ -3,6 +3,7 @@ window.Team = (function team_js() {
         console.log('creating new team');
         
         this._loaded = new $.Deferred();
+        this._started = new $.Deferred();
         this._unloaded = new $.Deferred();
         
         // IF this is called from the main window, launch a new team window
@@ -42,6 +43,10 @@ window.Team = (function team_js() {
             return this._loaded.promise();
         },
         
+        started: function started() {
+        	return this._started.promise();
+        },
+        
         start: function start() {
             console.log('starting up team ' + this.name);
         
@@ -53,6 +58,8 @@ window.Team = (function team_js() {
                 this.players[i] = new Player();
             }
             
+            this.players.sort(this.sortPlayers);
+            
             var team = d3.select(this.proxy.document.body).select('#roster');
             team.append('h2')
                 .text(this.name);
@@ -60,7 +67,6 @@ window.Team = (function team_js() {
             team.selectAll('.player-cont')
                 .data(this.players)
                 .enter()
-                .sort(function (a,b) { return b.strength - a.strength; } )
                 .append('div')
                 .attr('class', 'player-cont')
                 .style('left', '200px')
@@ -69,13 +75,21 @@ window.Team = (function team_js() {
                 .duration(2000)
                 .delay(function (d,i) { return i * 100; })
                 .style('left', '0px');
+                
+            setTimeout($.proxy(function() {
+            	this._started.resolve();
+            }, this), 2000 + this.players.length * 100);
+        },
+        
+        sortPlayers: function(a,b) {
+        	return b.strength - a.strength;
         },
         
         update: function update() {
         	var team = d3.select(this.proxy.document.body).select('#roster');
             var players = team.selectAll('.player-cont')
             	.data(this.players)
-            	.sort(function (a,b) { return b.strength - a.strength; });
+            	.sort(this.sortPlayers);
             	
             players.select('.player-strength-current')
             	.style('width', function (d,i) {

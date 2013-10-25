@@ -31,7 +31,13 @@ window.Arena = (function arena_js() {
             
             this.teams = [];
             this.match = null;
-            
+                    
+            // bring up the house lights
+            d3.select(this.proxy.document.body).select('#lights')
+                .transition()
+                .duration(5000)
+                .style('opacity', 0.0);
+
             this._loaded.resolve();
         },
         
@@ -41,12 +47,6 @@ window.Arena = (function arena_js() {
         
         start: function status() {
             console.log('starting up arena');
-        
-            // bring up the house lights
-            d3.select(this.proxy.document.body).select('#lights')
-                .transition()
-                .duration(5000)
-                .style('opacity', 0.0);
                 
             // get players from teams if teams are ready
             if (this.teams.length !== 2) {
