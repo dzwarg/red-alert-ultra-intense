@@ -41,7 +41,7 @@ window.Match = (function match_js() {
         	// since this is a trigger, pass the callback to be invoked when the players
         	// have fully entered the arena
         	$(this).trigger('players-entered', [this.players, $.proxy(function() {
-            	this.clock = setInterval($.proxy(this.doRound, this, this.clock), 100);
+            	this.clock = setInterval($.proxy(this.doRound, this), 100);
         	}, this)]);
         },
         
@@ -61,6 +61,8 @@ window.Match = (function match_js() {
         			winner = this.players[1 - i];
         		}
         	}
+        	
+        	audio.play('hit1');
         	        	
         	$(this).trigger('player-update', [{winner:winner, loser:loser}]);
 
@@ -69,11 +71,13 @@ window.Match = (function match_js() {
         		return;
         	}
         	
+        	clearInterval(this.clock);
+        	
+        	audio.play('win1');
+        	
         	console.log('the winner of this match is: ' + winner.name + ' after ' + (this.round + 1) + ' rounds');
         	
-	    	clearInterval(this.clock);
-        	
-        	this._completed.resolve();
+        	$(this).trigger('players-exited', [this.players, winner, loser, this._completed.resolve]);
 	    },
 	   
 	    stop: function() {

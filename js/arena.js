@@ -96,6 +96,7 @@ window.Arena = (function arena_js() {
             	
             $(match).on('player-update', $.proxy(this.matchUpdate, this));
             $(match).on('players-entered', $.proxy(this.playersEntered, this));
+            $(match).on('players-exited', $.proxy(this.playersExited, this));
             
             match.start();
             
@@ -110,8 +111,15 @@ window.Arena = (function arena_js() {
         },
         
         playersEntered: function playersEntered(event, players, callback) {
-        	var arena = this;
-        	d3.select(this.proxy.document.body).selectAll('#arena .avatar')
+        	audio.play('enter1');
+        	
+        	var arena = d3.select(this.proxy.document.body);
+        	
+        	// always start with zero avatars
+        	arena.selectAll('#arena .avatar')
+        		.remove();
+        		
+        	arena.selectAll('#arena .avatar')
         		.data(players)
         		.enter()
         		.append('img')
@@ -119,6 +127,38 @@ window.Arena = (function arena_js() {
         		.attr('src', function (d,i) { return d.avatar.src; })
         		.classed('avatar-left', function (d,i) { return (i===0); })
         		.classed('avatar-right', function (d,i) { return (i===1); });
+        		
+        	arena.selectAll('.avatar-left')
+        		.style('left', '-200px')
+        		.transition()
+        		.style('left', '140px');
+        		
+        	arena.selectAll('.avatar-right')
+        		.style('right', '-200px')
+        		.transition()
+        		.style('right', '140px');
+        		
+        	// default time for the transitions is 250ms
+        	setTimeout(callback, 250);
+        },
+        
+        playersExited: function playersExited(event, players, winner, loser, callback) {
+        	var arena = d3.select(this.proxy.document.body);
+        	
+        	arena.selectAll('#arena .avatar')
+        		.data(players)
+        		.filter(function (d,i) { return d.name === loser.name; })
+        		.transition()
+        		.style('top', this.proxy.document.height);
+        		
+        	arena.selectAll('#arena .avatar')
+        		.data(players)
+        		.filter(function (d,i) { return d.name === winner.name; })
+        		.transition()
+        		.style('top', '-256px');
+        		
+        	// default time for the transitions is 250ms
+        	setTimeout(callback, 250);
         },
         
         stop: function stop() {

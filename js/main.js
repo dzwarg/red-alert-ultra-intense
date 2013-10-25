@@ -49,6 +49,11 @@ $(function () {
         	// teams are ready
             arena.start();
         });
+        
+        audio.boot();
+        audio.add('hit1');
+        audio.add('win1');
+        audio.add('enter1');
     };
     
     var stopArena = function stopArena() {

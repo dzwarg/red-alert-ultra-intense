@@ -18,14 +18,6 @@
 	top: 125px;
 }
 
-#arena .avatar-left {
-	left: 140px;
-}
-
-#arena .avatar-right {
-	right: 140px;
-}
-
 #team {
 	overflow-x: hidden;
 	overflow-y: scroll;

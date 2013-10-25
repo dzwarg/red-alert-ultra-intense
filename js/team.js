@@ -58,7 +58,7 @@ window.Team = (function team_js() {
             this.players = new Array(n);
             
             for (var i = 0; i < n; i++) {
-                this.players[i] = new Player();
+                this.players[i] = new Player({facing:this.name.indexOf('2') === -1});
             }
             
             this.players.sort(this.sortPlayers);
