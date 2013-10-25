@@ -4,7 +4,7 @@ $(function () {
     	team2,
     	width = window.screen.availWidth,
     	height = window.screen.availHeight,
-    	options = {height:700, width:468},
+    	options = {height:468, width:700},
     	teamWidth = (width-options.width)/2,
     	topMargin = 100;;
 	
