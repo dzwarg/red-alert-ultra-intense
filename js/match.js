@@ -1,4 +1,13 @@
 window.Match = (function match_js() {
+	// Match class
+	//
+	// Match will create two deferred objects that are unresolved; one for completed state
+	// and another for cancelled state.  When the match has completed all 'actions'
+	// successfully, this._completed is resolved; when the match is cancelled externally,
+	// this._canceled is resolved.
+	//
+	// This constructor does not create any new windows, and initializes the match with
+	// the provided options.
     var Match = function Match(options) {
     	console.log('creating new match');
     	
@@ -9,26 +18,37 @@ window.Match = (function match_js() {
     };
 
     var proto = {
-    	round: null,
+    	// which round is this match at
+    	round: 0,
     	
+    	// an interval clock, assigned from 'setInterval'
     	clock: null,
     	
+    	// the players with the gentlemen's/ladies disagreement
     	players: [],
     	
+    	// initialize this match object
         initialize: function (options) {
         	this.round = 0;
         	this.players = options.players;
         	this.clock = null;
         },
         
+        // this match is running if the clock is set
         running: function () {
         	return this.clock !== null;
         },
         
+        // get a promise object that resolves when the match is complete
         complete: function () {
         	return this._completed.promise();
         },
         
+        // start a match
+        //
+        // This method does nothing if two players are not available. This triggers the 
+        // 'players-entered' event, and provides a callback for when players have
+        // completely entered.
         start: function () {
         	console.log('starting match!');
         	
@@ -45,6 +65,15 @@ window.Match = (function match_js() {
         	}, this)]);
         },
         
+        // execute a single round of battle
+        //
+        // This is the 'tick' function that performs an action for each step in a battle.
+        //
+        // When the battle is complete, this.clock is cleared. If the battle continues,
+        // the round count is incremented. Each time the round progresses, a 
+        // 'player-update' event is triggered, indicating that the UI can update the state
+        // of the player/team. In addition, if the match is complete, the 'players-exited'
+        // event is triggered to remove the players from the arena.
         doRound: function () {
 			console.log('battling round ' + (this.round + 1));
         	// calculate the 'battle' rounds creatively!
@@ -79,18 +108,17 @@ window.Match = (function match_js() {
         	
         	$(this).trigger('players-exited', [this.players, winner, loser, this._completed.resolve]);
 	    },
-	   
+	    
+	    // stop a match
+	    //
+	    // This stops a match in progress. It returns a promise object that resolves when
+	    // the match is cancelled.
 	    stop: function() {
 	    	console.log('stopping match!');
-	    	
-	    	// TODO: dismiss players
 	    	
 	    	clearInterval(this.clock);
 	    	
 	    	this._canceled.resolve();
-        	
-        	// TODO: trigger a 'game over' event
-        	// $.trigger('gameover', [{winner:winner, loser:loser}]);
         	
         	return this._canceled.promise();
 	    }
