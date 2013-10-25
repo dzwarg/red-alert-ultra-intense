@@ -198,7 +198,15 @@ window.Arena = (function arena_js() {
         		.style('right', '-200px')
         		.transition()
         		.style('right', '140px');
-        		
+
+            // projectile from right
+            arena.selectAll('.projectile')
+                .data(players)
+                .enter()
+                .append('img')
+                .attr('class', 'projectile')
+                .attr('src', $.proxy(function (d,i) { return this.getProjectile(i===0); }, this))
+
         	// default time for the transitions is 250ms, but our entrance theme song
         	// lasts a little more than a second
         	setTimeout(callback, 1500);
@@ -228,6 +236,10 @@ window.Arena = (function arena_js() {
         		.transition()
 				.delay(250)
         		.style('top', '-256px');
+
+            // remove projectile
+            arena.selectAll('.projectile')
+                .remove();
         		
         	// default time for the transitions is 250ms
         	setTimeout(callback, 500);
@@ -307,6 +319,25 @@ window.Arena = (function arena_js() {
             });
                         
 			this.teams.push(team);
+        },
+
+        getProjectile: function (side) {
+            var gif = [
+                "bread",,
+                "cake",
+                "ice-cream",
+                "str-short-cake"
+            ];
+
+            var n = Math.floor((Math.random()*4)+0);
+
+            if (side) {
+                side = "";
+            } else {
+                side = "_l";
+            }
+
+            return "./img/projectilesinmotion/" + gif[n] + side +".gif" ;
         }
     };
     
