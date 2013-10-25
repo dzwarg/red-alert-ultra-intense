@@ -66,7 +66,9 @@ window.Team = (function team_js() {
             var team = d3.select(this.proxy.document.body).select('#roster');
             team.append('h2')
                 .text(this.name);
-                
+            
+            audio.play('teamLoad');
+    
             team.selectAll('.player-cont')
                 .data(this.players)
                 .enter()
@@ -86,7 +88,7 @@ window.Team = (function team_js() {
                 
             setTimeout($.proxy(function() {
             	this._started.resolve();
-            }, this), 1000 + this.players.length * 100);
+            }, this), 2000 + this.players.length * 100);
         },
         
         sortPlayers: function(a,b) {

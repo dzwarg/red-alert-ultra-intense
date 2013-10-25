@@ -19,7 +19,7 @@ window.Arena = (function arena_js() {
         if (window.name === '') {
             console.log('opening new arena window');
             this.proxy = window.open('arena.html', 'Arena', 'location=no,menubar=no,scrollbars=no,status=no,toolbar=no');
-
+	    // Give Intro Music time to play
             window._init.Arena = $.proxy(function() {
                 console.log('arena _init');
                 this.initialize(options);
@@ -82,14 +82,14 @@ window.Arena = (function arena_js() {
         // Start a new arena. If there are teams already attached, run a match-up
         // immediately.
         start: function status() {
-            console.log('starting up arena');
-                
+            console.log('starting up arena'); 
+    
             // get players from teams if teams are ready
             if (this.teams.length !== 2) {
             	return;
             }
             
-            this.runMatchChain();
+            setTimeout($.proxy(this.runMatchChain, this), 3000);
         },
         
         // run a sequence of matches until there are no more valid players
@@ -103,11 +103,15 @@ window.Arena = (function arena_js() {
         	if (!this.teams[0].inTheGame()) {
         		console.log('team 1 is the winner!');
         		// teams[1] is the winner!
-        		return;
+			audio.play('cheering');
+        		audio.play('welcome');
+			return;
         	}
         	if (!this.teams[1].inTheGame()) {
         		console.log('team 0 is the winner!');
         		// teams[0] is the winner!
+			audio.play('welcome');
+			audio.play('cheering');
         		return;
         	}
         	
@@ -159,7 +163,7 @@ window.Arena = (function arena_js() {
         playersEntered: function playersEntered(event, players, callback) {
         
         	// play some fanfare when players enter
-        	audio.play('enter1');
+        	audio.play('playerEnter');
         	
         	var arena = d3.select(this.proxy.document.body);
         	
@@ -201,7 +205,9 @@ window.Arena = (function arena_js() {
         // This will propel the winner up, and drop the loser down
         playersExited: function playersExited(event, players, winner, loser, callback) {
         	var arena = d3.select(this.proxy.document.body);
-        	
+        
+		audio.play('victory');
+	
         	// select the loser, and set his/her top position to the bottom of the
         	// document, sending them to purgatory
         	arena.selectAll('#arena .avatar')
@@ -216,10 +222,11 @@ window.Arena = (function arena_js() {
         		.data(players)
         		.filter(function (d,i) { return d.name === winner.name; })
         		.transition()
+			.delay(250)
         		.style('top', '-256px');
         		
         	// default time for the transitions is 250ms
-        	setTimeout(callback, 250);
+        	setTimeout(callback, 500);
         },
         
         // stop the arena
