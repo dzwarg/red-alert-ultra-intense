@@ -54,7 +54,7 @@ window.Team = (function team_js() {
             console.log('starting up team ' + this.name);
         
             // bring in team members
-            var n = Math.round(1 + Math.random() * 3);
+            var n = Math.round(5 + Math.random() * 5);
             this.players = new Array(n);
             
             for (var i = 0; i < n; i++) {
