@@ -64,7 +64,7 @@ window.Match = (function match_js() {
 				
 				// TODO: add projectile animations to arena
 				
-            	this.clock = setInterval($.proxy(this.doRound, this), 500);
+            	this.clock = setInterval($.proxy(this.doRound, this), 100);
         	}, this)]);
         },
         

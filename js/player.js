@@ -18,7 +18,7 @@ window.Player = (function player_js() {
 		}
 		*/
 		
-		name = 'IMGCSI-' + Math.round(Math.random() * 1000);
+		var name = 'IMGCSI-' + Math.round(Math.random() * 1000);
 		return name;
 	};
 	
