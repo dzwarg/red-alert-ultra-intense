@@ -206,7 +206,7 @@ window.Arena = (function arena_js() {
                 .append('img')
                 .attr('class', 'projectile')
                 .attr('src', $.proxy(function (d,i) { return this.getProjectile(i===0); }, this));
-        		
+
         	// default time for the transitions is 250ms, but our entrance theme song
         	// lasts a little more than a second
         	setTimeout(callback, 1500);
@@ -236,6 +236,10 @@ window.Arena = (function arena_js() {
         		.transition()
 				.delay(250)
         		.style('top', '-256px');
+
+            // remove projectile
+            arena.selectAll('.projectile')
+                .remove();
         		
         	// default time for the transitions is 250ms
         	setTimeout(callback, 500);

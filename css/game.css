@@ -112,3 +112,9 @@
 	background-color: rgb(43, 114, 43);
 	width: 100%;
 }
+
+.projectile {
+    position:absolute;
+    left:200px;
+    top:100px;
+}
